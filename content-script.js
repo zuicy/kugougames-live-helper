@@ -146,9 +146,46 @@
         });
     }
 
+    // ─── 来源检查：仅在指定网站的 iframe 中激活 ───
+
+    /** 允许的父页面来源域名 */
+    const ALLOWED_ORIGINS = ['kugougames.cn', 'localhost'];
+
+    /**
+     * 检查当前页面是否嵌入在允许的父页面中
+     * 方式1：ancestorOrigins（Chromium 系浏览器 100% 可用）
+     * 方式2：document.referrer 兜底
+     */
+    function isAllowedParent() {
+        // 如果不在 iframe 中（顶层页面），不激活
+        if (window === window.top) {
+            return false;
+        }
+
+        // 方式1：ancestorOrigins（最可靠，Chromium 系全支持）
+        if (window.location.ancestorOrigins && window.location.ancestorOrigins.length > 0) {
+            const parentOrigin = window.location.ancestorOrigins[0];
+            return ALLOWED_ORIGINS.some(domain => parentOrigin.includes(domain));
+        }
+
+        // 方式2：document.referrer 兜底
+        if (document.referrer) {
+            return ALLOWED_ORIGINS.some(domain => document.referrer.includes(domain));
+        }
+
+        // 无法判断来源，不激活
+        return false;
+    }
+
     // ─── 初始化 ───
 
     async function init() {
+        // 来源检查：仅在允许的父页面 iframe 中激活
+        if (!isAllowedParent()) {
+            console.log(`${LOG_PREFIX} 非目标环境，跳过激活`);
+            return;
+        }
+
         console.log(`${LOG_PREFIX} Content Script 已加载，等待播放器...`);
 
         const video = await waitForVideo();
