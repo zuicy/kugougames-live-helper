@@ -191,8 +191,7 @@
         const video = await waitForVideo();
 
         if (!video) {
-            console.warn(`${LOG_PREFIX} 未找到 video 元素，音频控制不可用`);
-            // 即使没找到 video，也启动重连监听，后续出现时自动绑定
+            // 未找到 video 元素，静默处理；启动重连监听，后续出现时自动绑定
             startReconnectObserver();
             return;
         }

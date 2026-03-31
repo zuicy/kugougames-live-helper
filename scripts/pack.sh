@@ -16,6 +16,16 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 DIST_DIR="$PROJECT_ROOT/dist"
 MANIFEST="$PROJECT_ROOT/manifest.json"
+DEV_DIR="$DIST_DIR/dev"
+MODE="${1:-pack}"  # 默认 pack 模式，传 dev 则为开发调试模式
+
+# 扩展实际需要的文件列表（只有这些会被复制/打包）
+EXT_FILES=(
+    "manifest.json"
+    "background.js"
+    "content-script.js"
+    "icons/"
+)
 
 # 颜色定义
 RED='\033[0;31m'
@@ -24,6 +34,52 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 CYAN='\033[0;36m'
 NC='\033[0m'
+
+# ============================================
+# dev 模式：生成干净的本地调试目录
+# 用法：bash scripts/pack.sh dev
+# Chrome 加载 dist/dev/ 目录即可调试
+# ============================================
+if [ "$MODE" = "dev" ]; then
+    echo -e "${BLUE}╔═══════════════════════════════════════════╗${NC}"
+    echo -e "${BLUE}║   🔧 开发调试模式                        ║${NC}"
+    echo -e "${BLUE}║   生成干净的扩展目录供浏览器加载          ║${NC}"
+    echo -e "${BLUE}╚═══════════════════════════════════════════╝${NC}"
+    echo ""
+
+    # 清理旧的 dev 目录
+    rm -rf "$DEV_DIR"
+    mkdir -p "$DEV_DIR"
+
+    # 只复制扩展需要的文件
+    for item in "${EXT_FILES[@]}"; do
+        if [ -d "$PROJECT_ROOT/$item" ]; then
+            cp -r "$PROJECT_ROOT/$item" "$DEV_DIR/$item"
+        elif [ -f "$PROJECT_ROOT/$item" ]; then
+            cp "$PROJECT_ROOT/$item" "$DEV_DIR/$item"
+        else
+            echo -e "  ${YELLOW}⚠ 跳过不存在的: $item${NC}"
+        fi
+    done
+
+    echo -e "${GREEN}✅ 开发目录已生成: ${CYAN}dist/dev/${NC}"
+    echo ""
+    echo -e "  📁 目录内容:"
+    ls -la "$DEV_DIR" | tail -n +2 | while read line; do
+        echo -e "     $line"
+    done
+    echo ""
+    echo -e "${YELLOW}📋 使用方法:${NC}"
+    echo -e "  1. 打开 Chrome → ${CYAN}chrome://extensions/${NC}"
+    echo -e "  2. 开启「开发者模式」"
+    echo -e "  3. 点击「加载已解压的扩展程序」"
+    echo -e "  4. 选择 ${CYAN}dist/dev/${NC} 目录"
+    echo -e ""
+    echo -e "${YELLOW}💡 提示:${NC}"
+    echo -e "  修改代码后重新运行 ${CYAN}bash scripts/pack.sh dev${NC}"
+    echo -e "  然后在 Chrome 扩展页面点击 🔄 刷新按钮即可"
+    exit 0
+fi
 
 echo -e "${BLUE}╔═══════════════════════════════════════════╗${NC}"
 echo -e "${BLUE}║   🧩 浏览器扩展打包工具                  ║${NC}"

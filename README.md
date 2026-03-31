@@ -23,15 +23,25 @@
 - **Chrome**: [Chrome Web Store 链接]()（审核中）
 - **Edge**: [Edge Add-ons 链接]()（审核中）
 
-### 手动安装（开发者）
+### 手动安装
 
-1. 下载或克隆本仓库
-2. 打开浏览器扩展管理页面
+1. 前往 [Releases](../../releases) 页面，下载最新版本的 `.zip` 文件
+2. 解压到任意文件夹
+3. 打开浏览器扩展管理页面
    - Chrome: `chrome://extensions/`
    - Edge: `edge://extensions/`
-3. 开启「开发者模式」
-4. 点击「加载已解压的扩展程序」
-5. 选择本仓库根目录（包含 `manifest.json` 的目录）
+4. 开启「开发者模式」
+5. 点击「加载已解压的扩展程序」
+6. 选择解压后的文件夹（包含 `manifest.json` 的目录）
+
+### 开发者调试
+
+```bash
+# 克隆仓库后，生成干净的扩展目录
+bash scripts/pack.sh dev
+```
+
+然后在浏览器加载 `dist/dev/` 目录即可。修改代码后重新运行上述命令，在扩展页面点击刷新按钮更新。
 
 ## 项目结构
 
@@ -70,10 +80,14 @@ kugougames.cn 监控页面
 ## 打包
 
 ```bash
+# 本地调试：生成干净的扩展目录到 dist/dev/
+bash scripts/pack.sh dev
+
+# 正式打包：生成 zip 用于提交商店或上传 Release
 bash scripts/pack.sh
 ```
 
-输出文件：`dist/kugougames-live-helper-v{版本号}.zip`，可直接上传到 Chrome Web Store 和 Edge Add-ons。
+输出文件：`dist/kugougames-live-helper-v{版本号}.zip`，可直接上传到 Chrome Web Store、Edge Add-ons 或 GitHub Releases。
 
 ## 隐私
 
