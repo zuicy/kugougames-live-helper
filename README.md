@@ -20,8 +20,9 @@
 
 ### 从商店安装（推荐）
 
-- **Chrome**: [Chrome Web Store 链接]()（审核中）
-- **Edge**: [Edge Add-ons 链接]()（审核中）
+- **Chrome**: [📦 Chrome Web Store 安装](https://chromewebstore.google.com/detail/kugougames%E7%9B%B4%E6%92%AD%E7%9B%91%E6%8E%A7%E5%AE%A4-%E9%9F%B3%E9%A2%91%E6%8E%A7%E5%88%B6/ofnegfadodhdmbcmciebogmepibfejcl)
+- **Edge**: [Edge Add-ons 安装]()【审核中】
+- **开源地址**: [Gitee](https://gitee.com/zuicy/kugougames-live-helper)
 
 ### 手动安装
 
